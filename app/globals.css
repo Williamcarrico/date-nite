@@ -1,0 +1,375 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Playful & Colorful Date Nite Theme */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display);
+
+  /* Formal type scale (utilities: text-display / text-h1 … text-caption) */
+  --text-display: 3.5rem;
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.02em;
+  --text-h1: 2.5rem;
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.015em;
+  --text-h2: 2rem;
+  --text-h2--line-height: 1.15;
+  --text-h3: 1.5rem;
+  --text-h3--line-height: 1.25;
+  --text-body: 1rem;
+  --text-body--line-height: 1.6;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.4;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+
+:root {
+  /* Playful rounded corners */
+  --radius: 1rem;
+
+  /* Soft cream background (oklch — wider gamut, perceptually uniform) */
+  --background: oklch(97.96% 0.0158 73.68);
+  --foreground: oklch(25.73% 0.0861 281.29);
+
+  /* Card - white with soft shadow */
+  --card: oklch(100% 0 0);
+  --card-foreground: oklch(25.73% 0.0861 281.29);
+
+  /* Popover */
+  --popover: oklch(100% 0 0);
+  --popover-foreground: oklch(25.73% 0.0861 281.29);
+
+  /* Primary - Vibrant Pink/Coral */
+  --primary: oklch(72.34% 0.1854 1.78);
+  --primary-foreground: oklch(100% 0 0);
+
+  /* Secondary - Electric Purple */
+  --secondary: oklch(60.56% 0.2189 292.72);
+  --secondary-foreground: oklch(100% 0 0);
+
+  /* Muted */
+  --muted: oklch(96.82% 0.0254 78.92);
+  --muted-foreground: oklch(55.44% 0.0407 257.42);
+
+  /* Accent - Sunny Yellow */
+  --accent: oklch(83.69% 0.1644 84.43);
+  --accent-foreground: oklch(25.73% 0.0861 281.29);
+
+  /* Success - Mint Green */
+  --success: oklch(77.29% 0.1535 163.22);
+  --success-foreground: oklch(100% 0 0);
+
+  /* Warning - Orange */
+  --warning: oklch(75.76% 0.159 55.93);
+  --warning-foreground: oklch(100% 0 0);
+
+  /* Destructive - Red */
+  --destructive: oklch(63.68% 0.2078 25.33);
+  --destructive-foreground: oklch(100% 0 0);
+
+  /* Borders & Inputs */
+  --border: oklch(88.4% 0.0312 64.26);
+  --input: oklch(88.4% 0.0312 64.26);
+  --ring: oklch(72.34% 0.1854 1.78);
+
+  /* Chart colors - playful palette */
+  --chart-1: oklch(72.34% 0.1854 1.78);
+  --chart-2: oklch(60.56% 0.2189 292.72);
+  --chart-3: oklch(77.29% 0.1535 163.22);
+  --chart-4: oklch(83.69% 0.1644 84.43);
+  --chart-5: oklch(75.85% 0.1554 46.79);
+
+  /* Sidebar */
+  --sidebar: oklch(100% 0 0);
+  --sidebar-foreground: oklch(25.73% 0.0861 281.29);
+  --sidebar-primary: oklch(72.34% 0.1854 1.78);
+  --sidebar-primary-foreground: oklch(100% 0 0);
+  --sidebar-accent: oklch(96.82% 0.0254 78.92);
+  --sidebar-accent-foreground: oklch(25.73% 0.0861 281.29);
+  --sidebar-border: oklch(88.4% 0.0312 64.26);
+  --sidebar-ring: oklch(72.34% 0.1854 1.78);
+
+  /* Brand gradient stops (from-stop tracks --primary etc.; to-stops are brand ramps) */
+  --grad-primary-from: var(--primary);
+  --grad-primary-to: oklch(75.85% 0.1554 46.79);   /* coral → peach */
+  --grad-secondary-from: var(--secondary);
+  --grad-secondary-to: oklch(65.59% 0.2118 354.31); /* purple → magenta */
+  --grad-accent-from: var(--accent);
+  --grad-accent-to: oklch(70.49% 0.1867 47.6);      /* yellow → orange */
+  --grad-success-from: var(--success);
+  --grad-success-to: oklch(69.59% 0.1491 162.48);   /* mint → teal */
+}
+
+.dark {
+  /* Rich purple background */
+  --background: oklch(25.73% 0.0861 281.29);
+  --foreground: oklch(98.42% 0.0034 247.86);
+
+  /* Card - deep purple */
+  --card: oklch(31.92% 0.0896 283.56);
+  --card-foreground: oklch(98.42% 0.0034 247.86);
+
+  /* Popover */
+  --popover: oklch(31.92% 0.0896 283.56);
+  --popover-foreground: oklch(98.42% 0.0034 247.86);
+
+  /* Primary - Vibrant Pink (brighter in dark mode) */
+  --primary: oklch(76.48% 0.1553 357.51);
+  --primary-foreground: oklch(25.73% 0.0861 281.29);
+
+  /* Secondary - Electric Purple (lighter) */
+  --secondary: oklch(70.9% 0.1592 293.54);
+  --secondary-foreground: oklch(25.73% 0.0861 281.29);
+
+  /* Muted */
+  --muted: oklch(37.87% 0.1011 284.18);
+  --muted-foreground: oklch(71.07% 0.0351 256.79);
+
+  /* Accent - Sunny Yellow */
+  --accent: oklch(87.9% 0.1534 91.61);
+  --accent-foreground: oklch(25.73% 0.0861 281.29);
+
+  /* Success */
+  --success: oklch(80.03% 0.1821 151.71);
+  --success-foreground: oklch(25.73% 0.0861 281.29);
+
+  /* Warning */
+  --warning: oklch(83.66% 0.1165 66.29);
+  --warning-foreground: oklch(25.73% 0.0861 281.29);
+
+  /* Destructive */
+  --destructive: oklch(71.06% 0.1661 22.22);
+  --destructive-foreground: oklch(100% 0 0);
+
+  /* Borders & Inputs */
+  --border: oklch(45.68% 0.2146 277.02);
+  --input: oklch(45.68% 0.2146 277.02);
+  --ring: oklch(76.48% 0.1553 357.51);
+
+  /* Chart colors */
+  --chart-1: oklch(76.48% 0.1553 357.51);
+  --chart-2: oklch(70.9% 0.1592 293.54);
+  --chart-3: oklch(80.03% 0.1821 151.71);
+  --chart-4: oklch(87.9% 0.1534 91.61);
+  --chart-5: oklch(79.38% 0.1248 42.42);
+
+  /* Sidebar */
+  --sidebar: oklch(31.92% 0.0896 283.56);
+  --sidebar-foreground: oklch(98.42% 0.0034 247.86);
+  --sidebar-primary: oklch(76.48% 0.1553 357.51);
+  --sidebar-primary-foreground: oklch(25.73% 0.0861 281.29);
+  --sidebar-accent: oklch(37.87% 0.1011 284.18);
+  --sidebar-accent-foreground: oklch(98.42% 0.0034 247.86);
+  --sidebar-border: oklch(45.68% 0.2146 277.02);
+  --sidebar-ring: oklch(76.48% 0.1553 357.51);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom gradient utility classes */
+@layer utilities {
+  .gradient-primary {
+    background: linear-gradient(135deg, var(--grad-primary-from) 0%, var(--grad-primary-to) 100%);
+  }
+  .gradient-secondary {
+    background: linear-gradient(135deg, var(--grad-secondary-from) 0%, var(--grad-secondary-to) 100%);
+  }
+  .gradient-accent {
+    background: linear-gradient(135deg, var(--grad-accent-from) 0%, var(--grad-accent-to) 100%);
+  }
+  .gradient-success {
+    background: linear-gradient(135deg, var(--grad-success-from) 0%, var(--grad-success-to) 100%);
+  }
+  .text-gradient-primary {
+    background: linear-gradient(135deg, var(--grad-primary-from) 0%, var(--grad-primary-to) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .shadow-playful {
+    box-shadow: 0 4px 14px 0 color-mix(in oklch, var(--primary) 25%, transparent);
+  }
+  .shadow-playful-lg {
+    box-shadow: 0 10px 40px 0 color-mix(in oklch, var(--primary) 30%, transparent);
+  }
+  /* Shimmer skeleton: soft tinted base + a moving sheen (pairs with .animate-shimmer,
+     which supplies the keyframe + is neutralized under prefers-reduced-motion). */
+  .skeleton-shimmer {
+    background-color: color-mix(in oklch, var(--accent) 28%, transparent);
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--foreground) 8%, transparent),
+      transparent
+    );
+    background-size: 200% 100%;
+    background-repeat: no-repeat;
+  }
+}
+
+/* Playful animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px color-mix(in oklch, var(--primary) 40%, transparent); }
+  50% { box-shadow: 0 0 40px color-mix(in oklch, var(--primary) 60%, transparent); }
+}
+
+@keyframes confetti {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+  .animate-confetti {
+    animation: confetti 1s ease-out forwards;
+  }
+  .animate-sparkle {
+    animation: sparkle 0.6s ease-in-out;
+  }
+  .animate-bounce-in {
+    animation: bounce-in 0.5s ease-out;
+  }
+}
+
+/* New animations for header/footer components */
+@keyframes theme-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes menu-slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes notification-ping {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@layer utilities {
+  .animate-theme-rotate {
+    animation: theme-rotate 0.4s ease-in-out;
+  }
+  .animate-menu-slide-down {
+    animation: menu-slide-down 0.15s ease-out;
+  }
+  .animate-notification-ping {
+    animation: notification-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  .animate-shimmer {
+    animation: shimmer 2s linear infinite;
+    background-size: 200% 100%;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   Reduced-motion: neutralize decorative + infinite animations.
+   Only touches animation/transition timing — never transform/opacity/layout —
+   so elements still render in their correct final state (no broken layout).
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  /* Collapse all animations/transitions. 0.01ms (not 0s) keeps
+     animationend/transitionend events firing so JS that waits on them resolves. */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Explicitly stop our infinite decorative keyframes from looping. */
+  .animate-float,
+  .animate-pulse-glow,
+  .animate-notification-ping,
+  .animate-shimmer,
+  .animate-pulse {
+    animation: none !important;
+  }
+
+  /* Exception: loading spinners convey "busy" status, not decoration —
+     keep them spinning, just calmer. */
+  .animate-spin {
+    animation: spin 1.5s linear infinite !important;
+  }
+}

@@ -1,0 +1,12 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Date Nite">
+  <defs>
+    <linearGradient id="dn-bg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF6B9D"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#dn-bg)"/>
+  <path d="M256 392c-8 0-16-3-22-9l-118-118c-34-34-34-89 0-123 33-33 87-34 121-2 34-32 88-31 121 2 34 34 34 89 0 123L278 383c-6 6-14 9-22 9z" fill="#FFFFFF"/>
+  <circle cx="350" cy="150" r="20" fill="#FFC857"/>
+  <circle cx="392" cy="196" r="11" fill="#FFFFFF" fill-opacity="0.85"/>
+</svg>
