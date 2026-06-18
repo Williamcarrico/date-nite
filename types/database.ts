@@ -263,7 +263,6 @@ export type Database = {
           id: string
           intensity_level: number | null
           is_active: boolean | null
-          outdoor_only: boolean | null
           quick_filters: string[] | null
           requires_reservation: boolean | null
           reservation_platforms: string[] | null
@@ -287,7 +286,6 @@ export type Database = {
           id?: string
           intensity_level?: number | null
           is_active?: boolean | null
-          outdoor_only?: boolean | null
           quick_filters?: string[] | null
           requires_reservation?: boolean | null
           reservation_platforms?: string[] | null
@@ -311,7 +309,6 @@ export type Database = {
           id?: string
           intensity_level?: number | null
           is_active?: boolean | null
-          outdoor_only?: boolean | null
           quick_filters?: string[] | null
           requires_reservation?: boolean | null
           reservation_platforms?: string[] | null
@@ -587,78 +584,6 @@ export type Database = {
           },
         ]
       }
-      venues: {
-        Row: {
-          address: string | null
-          categories: string[] | null
-          city: string | null
-          created_at: string | null
-          google_place_id: string | null
-          google_rating: number | null
-          id: string
-          lat: number | null
-          lng: number | null
-          name: string
-          opentable_id: string | null
-          phone: string | null
-          reservation_url: string | null
-          resy_id: string | null
-          state: string | null
-          updated_at: string | null
-          venue_type: string | null
-          website: string | null
-          yelp_id: string | null
-          yelp_rating: number | null
-          zip: string | null
-        }
-        Insert: {
-          address?: string | null
-          categories?: string[] | null
-          city?: string | null
-          created_at?: string | null
-          google_place_id?: string | null
-          google_rating?: number | null
-          id?: string
-          lat?: number | null
-          lng?: number | null
-          name: string
-          opentable_id?: string | null
-          phone?: string | null
-          reservation_url?: string | null
-          resy_id?: string | null
-          state?: string | null
-          updated_at?: string | null
-          venue_type?: string | null
-          website?: string | null
-          yelp_id?: string | null
-          yelp_rating?: number | null
-          zip?: string | null
-        }
-        Update: {
-          address?: string | null
-          categories?: string[] | null
-          city?: string | null
-          created_at?: string | null
-          google_place_id?: string | null
-          google_rating?: number | null
-          id?: string
-          lat?: number | null
-          lng?: number | null
-          name?: string
-          opentable_id?: string | null
-          phone?: string | null
-          reservation_url?: string | null
-          resy_id?: string | null
-          state?: string | null
-          updated_at?: string | null
-          venue_type?: string | null
-          website?: string | null
-          yelp_id?: string | null
-          yelp_rating?: number | null
-          zip?: string | null
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never
@@ -708,28 +633,6 @@ export type Database = {
           idea_id: string
           match_score: number
           score_breakdown: Json
-        }[]
-      }
-      generate_suggestion: {
-        Args: { p_max_candidates?: number; p_profile_id: string }
-        Returns: {
-          category: string
-          cost_level: number
-          description: string
-          duration_minutes: number
-          estimated_cost_max: number
-          estimated_cost_min: number
-          idea_template_id: string
-          intensity_level: number
-          quick_filters: string[]
-          requires_reservation: boolean
-          reservation_platforms: string[]
-          search_keywords: string[]
-          setting_type: string
-          suggestion_id: string
-          title: string
-          venue_type: string
-          vibe_tags: string[]
         }[]
       }
       get_active_exclusions: {

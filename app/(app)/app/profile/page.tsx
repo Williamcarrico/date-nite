@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { getProfile, updateProfile, type ProfileFormData } from '@/lib/actions/profile'
 import { VIBE_TAGS, DIETARY_RESTRICTIONS, COST_LEVELS, US_STATES, CATEGORIES } from '@/lib/constants/options'
-import { User, MapPin, DollarSign, Heart, Utensils, Save, Loader2, Calendar, Star, ArrowLeft } from 'lucide-react'
+import { User, MapPin, DollarSign, Heart, Utensils, Save, Loader2, Star, ArrowLeft } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -25,14 +25,11 @@ export default function ProfilePage() {
     partner_name: '',
     location_city: '',
     location_state: '',
-    max_distance_miles: 25,
     budget_min: 0,
     budget_max: 200,
     cost_levels: [1, 2, 3],
     vibe_tags: [],
     dietary_restrictions: [],
-    preferred_day_of_week: [],
-    preferred_time_of_day: [],
     favorite_categories: [],
   })
 
@@ -45,14 +42,11 @@ export default function ProfilePage() {
           partner_name: data.partner_name || '',
           location_city: data.location_city || '',
           location_state: data.location_state || '',
-          max_distance_miles: data.max_distance_miles || 25,
           budget_min: data.budget_min || 0,
           budget_max: data.budget_max || 200,
           cost_levels: data.cost_levels || [1, 2, 3],
           vibe_tags: data.vibe_tags || [],
           dietary_restrictions: data.dietary_restrictions || [],
-          preferred_day_of_week: data.preferred_day_of_week || [],
-          preferred_time_of_day: data.preferred_time_of_day || [],
           favorite_categories: data.favorite_categories || [],
         })
       }
@@ -178,23 +172,6 @@ export default function ProfilePage() {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <Label>Max Distance</Label>
-              <span className="text-sm text-muted-foreground">
-                {profile.max_distance_miles} miles
-              </span>
-            </div>
-            <Slider
-              value={[profile.max_distance_miles || 25]}
-              onValueChange={([value]) => setProfile({ ...profile, max_distance_miles: value })}
-              min={5}
-              max={100}
-              step={5}
-              className="py-2"
-            />
           </div>
         </CardContent>
       </Card>
@@ -328,93 +305,6 @@ export default function ProfilePage() {
                 </label>
               </div>
             ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Temporal Preferences */}
-      <Card className="border-0 shadow-md">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-primary" />
-            Time Preferences
-          </CardTitle>
-          <CardDescription>When do you prefer to go on dates?</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Day of Week Selector */}
-          <div>
-            <Label>Preferred Days</Label>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
-                <Badge
-                  key={day}
-                  asChild
-                  variant={profile.preferred_day_of_week?.includes(index) ? 'default' : 'outline'}
-                  className={`cursor-pointer text-sm py-2 px-3 rounded-xl transition-all ${
-                    profile.preferred_day_of_week?.includes(index)
-                      ? 'gradient-primary text-white border-0'
-                      : 'hover:bg-muted'
-                  }`}
-                >
-                  <button
-                    type="button"
-                    aria-pressed={profile.preferred_day_of_week?.includes(index) ?? false}
-                    onClick={() =>
-                      setProfile({
-                        ...profile,
-                        preferred_day_of_week: toggleArrayValue(profile.preferred_day_of_week || [], index),
-                      })
-                    }
-                  >
-                    {day}
-                  </button>
-                </Badge>
-              ))}
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Select the days when you&apos;re most available for dates
-            </p>
-          </div>
-
-          {/* Time of Day Selector */}
-          <div>
-            <Label>Preferred Times</Label>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {[
-                { value: 'morning', label: 'Morning', emoji: '🌅' },
-                { value: 'afternoon', label: 'Afternoon', emoji: '☀️' },
-                { value: 'evening', label: 'Evening', emoji: '🌆' },
-                { value: 'night', label: 'Night', emoji: '🌙' },
-              ].map((time) => (
-                <Badge
-                  key={time.value}
-                  asChild
-                  variant={profile.preferred_time_of_day?.includes(time.value) ? 'default' : 'outline'}
-                  className={`cursor-pointer text-sm py-2 px-3 rounded-xl transition-all ${
-                    profile.preferred_time_of_day?.includes(time.value)
-                      ? 'gradient-primary text-white border-0'
-                      : 'hover:bg-muted'
-                  }`}
-                >
-                  <button
-                    type="button"
-                    aria-pressed={profile.preferred_time_of_day?.includes(time.value) ?? false}
-                    onClick={() =>
-                      setProfile({
-                        ...profile,
-                        preferred_time_of_day: toggleArrayValue(profile.preferred_time_of_day || [], time.value),
-                      })
-                    }
-                  >
-                    {time.emoji} {time.label}
-                  </button>
-                </Badge>
-              ))}
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Select the times when you prefer to have dates
-            </p>
           </div>
         </CardContent>
       </Card>

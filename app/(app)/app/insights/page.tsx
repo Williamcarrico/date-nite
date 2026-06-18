@@ -1,4 +1,5 @@
 import { getProfileInsights, getRatingDistribution, getDateTrends, getPreferenceWeights } from '@/lib/actions/insights'
+import { getSuggestionHistory } from '@/lib/actions/history'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { TrendingUp, Heart, DollarSign, Calendar, ArrowRight } from 'lucide-react'
@@ -6,6 +7,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { InsightsCharts } from '@/components/insights/InsightsCharts'
+import { ExportCsvButton, type ExportHistoryRow } from '@/components/insights/export-csv-button'
 import { CountUp } from '@/components/motion/number-flow'
 import type { Metadata } from 'next'
 
@@ -17,12 +19,15 @@ export default async function InsightsPage() {
 
   if (!user) redirect('/login')
 
-  const [insights, ratingDist, trends, weights] = await Promise.all([
+  const [insights, ratingDist, trends, weights, historyResult] = await Promise.all([
     getProfileInsights(user.id),
     getRatingDistribution(user.id),
     getDateTrends(user.id),
     getPreferenceWeights(user.id),
+    getSuggestionHistory(undefined, 1000, 0),
   ])
+
+  const history = historyResult.data as unknown as ExportHistoryRow[]
 
   if (!insights || insights.totalDates === 0) {
     return (
@@ -209,9 +214,7 @@ export default async function InsightsPage() {
                 Download your complete date history as a CSV file
               </p>
             </div>
-            <Button variant="outline" disabled>
-              Export CSV (Coming Soon)
-            </Button>
+            <ExportCsvButton history={history} />
           </div>
         </CardContent>
       </Card>

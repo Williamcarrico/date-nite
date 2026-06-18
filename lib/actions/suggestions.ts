@@ -34,7 +34,6 @@ export interface Suggestion {
   scheduledAt: string | null
   settingType: string | null
   intensityLevel: number
-  quickFilters: string[]
   reservationPlatforms: string[]
 }
 
@@ -130,7 +129,6 @@ export interface CandidateIdeaData {
   venue_type: string | null
   setting_type: string | null
   intensity_level: number
-  quick_filters: string[]
   reservation_platforms: string[]
 }
 
@@ -191,8 +189,6 @@ export async function generateSuggestion(options?: {
   intensityLevels?: number[]
   context?: {
     season?: string
-    dayOfWeek?: number
-    timeOfDay?: string
   }
 }): Promise<{
   success: boolean
@@ -287,7 +283,6 @@ export async function generateSuggestion(options?: {
       scheduledAt: null,
       settingType: ideaData.setting_type,
       intensityLevel: ideaData.intensity_level || 2,
-      quickFilters: ideaData.quick_filters || [],
       reservationPlatforms: ideaData.reservation_platforms || [],
     },
     metadata: {
@@ -358,14 +353,35 @@ export async function skipSuggestion(
     return { success: false, error: 'Unauthorized' }
   }
 
-  const { error } = await supabase
+  const { data: updated, error } = await supabase
     .from('suggestions')
     .update({ status: 'skipped' } as never)
     .eq('id', suggestionId)
     .eq('profile_id', user.id)
+    .select('idea_template_id')
+    .maybeSingle()
 
   if (error) {
     return { success: false, error: error.message }
+  }
+
+  // Write a 30-day exclusion so the scorer actually stops surfacing this idea
+  // for a while (the candidate generator filters on the `exclusions` table). A
+  // skip is a lighter "not right now" signal than the 90-day exclusion that
+  // scheduling/completing a date writes.
+  if (updated?.idea_template_id) {
+    const excludedUntil = new Date()
+    excludedUntil.setDate(excludedUntil.getDate() + 30)
+    await supabase
+      .from('exclusions')
+      .upsert(
+        {
+          profile_id: user.id,
+          idea_template_id: updated.idea_template_id,
+          excluded_until: excludedUntil.toISOString(),
+        },
+        { onConflict: 'profile_id,idea_template_id' }
+      )
   }
 
   revalidatePath('/app/randomize')
@@ -463,7 +479,6 @@ export async function getLatestSuggestion(): Promise<Suggestion | null> {
       requires_reservation: boolean
       setting_type: string | null
       intensity_level: number
-      quick_filters: string[]
       reservation_platforms: string[]
     }
     profiles: {
@@ -503,7 +518,6 @@ export async function getLatestSuggestion(): Promise<Suggestion | null> {
     scheduledAt: data.scheduled_at,
     settingType: template.setting_type,
     intensityLevel: template.intensity_level || 2,
-    quickFilters: template.quick_filters || [],
     reservationPlatforms: template.reservation_platforms || [],
   }
 }

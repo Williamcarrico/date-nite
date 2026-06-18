@@ -6,7 +6,7 @@ interface ICSEvent {
   location?: string
 }
 
-export function generateICS(event: ICSEvent): string {
+function generateICS(event: ICSEvent): string {
   const formatDate = (date: Date): string => {
     return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
   }

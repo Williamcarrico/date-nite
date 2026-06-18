@@ -73,16 +73,6 @@ export const INTENSITY_LEVELS = [
   { value: 4, label: 'Full Send', emoji: '🚀', description: 'Weekend cabin, camping trip' },
 ] as const
 
-export const QUICK_FILTERS = [
-  { value: 'romantic', label: 'Romantic', emoji: '💕' },
-  { value: 'fun_silly', label: 'Fun & Silly', emoji: '🎉' },
-  { value: 'intellectual', label: 'Intellectual', emoji: '🧠' },
-  { value: 'active', label: 'Active', emoji: '🏃' },
-  { value: 'creative', label: 'Creative', emoji: '🎨' },
-  { value: 'low_budget', label: 'Low Budget', emoji: '💰' },
-  { value: 'luxury', label: 'Luxury', emoji: '✨' },
-] as const
-
 export const RESERVATION_PLATFORMS = [
   { value: 'opentable', label: 'OpenTable', icon: 'Utensils' },
   { value: 'resy', label: 'Resy', icon: 'Utensils' },
@@ -98,5 +88,4 @@ export const RESERVATION_PLATFORMS = [
 
 export type SettingType = typeof SETTING_TYPES[number]['value']
 export type IntensityLevel = typeof INTENSITY_LEVELS[number]['value']
-export type QuickFilter = typeof QUICK_FILTERS[number]['value']
 export type ReservationPlatform = typeof RESERVATION_PLATFORMS[number]['value']
