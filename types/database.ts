@@ -371,6 +371,7 @@ export type Database = {
           created_at: string | null
           dietary_restrictions: string[] | null
           display_name: string | null
+          favorite_categories: string[] | null
           id: string
           location_city: string | null
           location_lat: number | null
@@ -390,6 +391,7 @@ export type Database = {
           created_at?: string | null
           dietary_restrictions?: string[] | null
           display_name?: string | null
+          favorite_categories?: string[] | null
           id: string
           location_city?: string | null
           location_lat?: number | null
@@ -409,6 +411,7 @@ export type Database = {
           created_at?: string | null
           dietary_restrictions?: string[] | null
           display_name?: string | null
+          favorite_categories?: string[] | null
           id?: string
           location_city?: string | null
           location_lat?: number | null
