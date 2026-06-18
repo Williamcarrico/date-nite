@@ -1,5 +1,6 @@
 export const VIBE_TAGS = [
   { value: 'romantic', label: 'Romantic', emoji: '💕' },
+  { value: 'flirty', label: 'Flirty', emoji: '😏' },
   { value: 'adventurous', label: 'Adventurous', emoji: '🎢' },
   { value: 'chill', label: 'Chill', emoji: '😌' },
   { value: 'fun', label: 'Fun', emoji: '🎉' },
@@ -51,6 +52,7 @@ export const CATEGORIES = [
   { value: 'outdoor', label: 'Outdoor', emoji: '🌳' },
   { value: 'cultural', label: 'Cultural', emoji: '🏛️' },
   { value: 'relaxation', label: 'Relaxation', emoji: '💆' },
+  { value: 'romance', label: 'Romance', emoji: '💋' },
 ] as const
 
 export const SETTING_TYPES = [
