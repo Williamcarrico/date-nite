@@ -3,7 +3,6 @@ import { Card } from '@/components/ui/card'
 import { Heart, Sparkles, RefreshCw, ArrowRight, Check } from 'lucide-react'
 import Link from 'next/link'
 import { FeatureCards } from '@/components/landing/feature-cards'
-import { Testimonials } from '@/components/landing/testimonials'
 import { Reveal, StaggerGroup, StaggerItem } from '@/components/motion/reveal'
 
 const steps = [
@@ -138,22 +137,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 px-4 sm:px-6 bg-muted/30">
-        <div className="max-w-6xl mx-auto">
-          <Reveal className="text-center mb-16">
-            <h2 className="font-display text-3xl sm:text-4xl font-semibold mb-4">
-              Loved by Couples
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              See what others are saying about Date Nite
-            </p>
-          </Reveal>
-
-          <Testimonials />
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
@@ -163,7 +146,7 @@ export default function LandingPage() {
                 Ready to Plan Your Next Date?
               </h2>
               <p className="text-lg opacity-90 mb-8 max-w-xl mx-auto">
-                Join thousands of couples who never run out of amazing date ideas.
+                Never run out of amazing date ideas.
                 Start free today!
               </p>
               <Link href="/signup">

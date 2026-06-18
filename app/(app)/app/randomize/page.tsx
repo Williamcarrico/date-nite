@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   generateSuggestion,
   scheduleSuggestion,
+  skipSuggestion,
   toggleFavorite,
   getLatestSuggestion,
   checkIsFavorited,
@@ -51,6 +52,7 @@ import {
   ChevronDown,
   ChevronUp,
   Zap,
+  ThumbsDown,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
@@ -124,8 +126,17 @@ export default function RandomizePage() {
     setIsLoading(true)
     setError(null)
 
+    // Mark the current suggestion skipped so abandoned ideas don't pile up as
+    // status='suggested'. Best-effort: a skip failure shouldn't block generating.
+    if (suggestion) {
+      try {
+        await skipSuggestion(suggestion.id)
+      } catch {
+        // Ignore — proceed to generate a fresh idea regardless.
+      }
+    }
+
     // Update temporal context
-    const now = new Date()
     const currentSeason = getCurrentSeason()
     const currentTimeOfDay = getTimeOfDay()
     setTemporalContext({
@@ -139,8 +150,6 @@ export default function RandomizePage() {
       intensityLevels: selectedIntensity.length > 0 ? selectedIntensity : undefined,
       context: {
         season: currentSeason,
-        dayOfWeek: now.getDay(),
-        timeOfDay: currentTimeOfDay,
       },
     })
 
@@ -167,6 +176,18 @@ export default function RandomizePage() {
         icon: <PartyPopper className="w-4 h-4" />,
       })
     }
+  }
+
+  async function handleSkip() {
+    if (!suggestion) return
+
+    toast('Skipped — we won\'t suggest that one again right now', {
+      icon: <ThumbsDown className="w-4 h-4" />,
+    })
+
+    // handleGenerate already skips the current suggestion before generating a
+    // fresh one, so this avoids double-skipping.
+    await handleGenerate()
   }
 
   async function handleSchedule() {
@@ -753,6 +774,16 @@ export default function RandomizePage() {
                         Get Different Idea
                       </>
                     )}
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    onClick={handleSkip}
+                    disabled={isLoading}
+                    className="flex-1 rounded-xl h-12 text-muted-foreground"
+                  >
+                    <ThumbsDown className="w-4 h-4 mr-2" />
+                    Not Interested
                   </Button>
                 </div>
 

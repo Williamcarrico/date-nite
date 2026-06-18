@@ -27,34 +27,6 @@ interface NotificationBellProps {
   className?: string
 }
 
-// Demo notifications for when none are provided
-const demoNotifications: Notification[] = [
-  {
-    id: '1',
-    title: 'Date night scheduled!',
-    message: 'Your romantic dinner at The Olive Garden is confirmed for Friday.',
-    read: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30 min ago
-    type: 'success',
-  },
-  {
-    id: '2',
-    title: 'New date idea for you',
-    message: 'Based on your preferences, we found a sunset hike you might love.',
-    read: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-    type: 'info',
-  },
-  {
-    id: '3',
-    title: 'Rate your last date',
-    message: "How was your movie night? Let us know to improve your suggestions.",
-    read: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-    type: 'info',
-  },
-]
-
 function formatTimeAgo(date: Date): string {
   const now = new Date()
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
@@ -67,7 +39,7 @@ function formatTimeAgo(date: Date): string {
 }
 
 export function NotificationBell({
-  notifications = demoNotifications,
+  notifications = [],
   onMarkAsRead,
   onMarkAllRead,
   className,
@@ -178,19 +150,6 @@ export function NotificationBell({
             </div>
           )}
         </div>
-
-        {/* Footer */}
-        {localNotifications.length > 0 && (
-          <div className="border-t border-border px-4 py-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full text-sm text-muted-foreground hover:text-foreground"
-            >
-              View all notifications
-            </Button>
-          </div>
-        )}
       </PopoverContent>
     </Popover>
   )

@@ -44,22 +44,6 @@ export function getTimeOfDay(): string {
 }
 
 /**
- * Gets the current day of week
- * @returns 0 (Sunday) to 6 (Saturday)
- */
-export function getDayOfWeek(): number {
-  return new Date().getDay()
-}
-
-/**
- * Gets a friendly label for day of week
- */
-export function getDayLabel(day: number): string {
-  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-  return days[day] || 'Unknown'
-}
-
-/**
  * Gets a friendly label for time of day
  */
 export function getTimeOfDayLabel(timeOfDay: string): string {
@@ -109,31 +93,4 @@ export function getTimeOfDayEmoji(timeOfDay: string): string {
     night: '🌙'
   }
   return emojis[timeOfDay] || '🕐'
-}
-
-/**
- * Checks if a date is appropriate for the current season
- */
-export function isSeasonalMatch(seasonal: string[] | null, strictSeason: boolean = false): boolean {
-  if (!seasonal || seasonal.length === 0) {
-    return true // No seasonal restrictions
-  }
-
-  const currentSeason = getCurrentSeason()
-  const matches = seasonal.includes(currentSeason)
-
-  // If strict, must match. Otherwise, just a preference
-  return strictSeason ? matches : true
-}
-
-/**
- * Gets context object for suggestion matching
- */
-export function getMatchingContext() {
-  return {
-    season: getCurrentSeason(),
-    dayOfWeek: getDayOfWeek(),
-    timeOfDay: getTimeOfDay(),
-    timestamp: new Date().toISOString()
-  }
 }

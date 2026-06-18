@@ -5,7 +5,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
+import { AddToCalendarButton } from '@/components/calendar/add-to-calendar-button'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -59,6 +61,8 @@ export default function HistoryPage() {
   const [completingId, setCompletingId] = useState<string | null>(null)
   const [rating, setRating] = useState(5)
   const [notes, setNotes] = useState('')
+  const [wouldRepeat, setWouldRepeat] = useState<boolean | null>(null)
+  const [actualCost, setActualCost] = useState('')
   const [showCompleteDialog, setShowCompleteDialog] = useState(false)
   const [selectedSuggestion, setSelectedSuggestion] = useState<SuggestionWithDetails | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
@@ -89,7 +93,9 @@ export default function HistoryPage() {
     const result = await completeSuggestion(
       selectedSuggestion.id,
       rating,
-      notes || undefined
+      notes || undefined,
+      actualCost ? Number(actualCost) : undefined,
+      wouldRepeat ?? undefined
     )
 
     setCompletingId(null)
@@ -101,6 +107,8 @@ export default function HistoryPage() {
       setShowCompleteDialog(false)
       setRating(5)
       setNotes('')
+      setWouldRepeat(null)
+      setActualCost('')
       // Refresh history
       const offset = (currentPage - 1) * itemsPerPage
       const { data, count } = await getSuggestionHistory(
@@ -239,7 +247,14 @@ export default function HistoryPage() {
                     {item.status === 'scheduled' && (
                       <Dialog open={showCompleteDialog && selectedSuggestion?.id === item.id} onOpenChange={(open) => {
                         setShowCompleteDialog(open)
-                        if (open) setSelectedSuggestion(item)
+                        if (open) {
+                          setSelectedSuggestion(item)
+                          // Reset the rating form for a fresh entry per date.
+                          setRating(5)
+                          setNotes('')
+                          setWouldRepeat(null)
+                          setActualCost('')
+                        }
                       }}>
                         <DialogTrigger asChild>
                           <Button size="sm" className="gradient-success text-white rounded-xl">
@@ -278,6 +293,45 @@ export default function HistoryPage() {
                               </div>
                             </div>
                             <div className="space-y-2">
+                              <label className="text-sm font-medium">Would you do this again?</label>
+                              <div className="flex gap-2">
+                                <Button
+                                  type="button"
+                                  variant={wouldRepeat === true ? 'default' : 'outline'}
+                                  onClick={() => setWouldRepeat((prev) => (prev === true ? null : true))}
+                                  aria-pressed={wouldRepeat === true}
+                                  className={`flex-1 rounded-xl ${wouldRepeat === true ? 'gradient-success text-white' : ''}`}
+                                >
+                                  Yes
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant={wouldRepeat === false ? 'default' : 'outline'}
+                                  onClick={() => setWouldRepeat((prev) => (prev === false ? null : false))}
+                                  aria-pressed={wouldRepeat === false}
+                                  className="flex-1 rounded-xl"
+                                >
+                                  No
+                                </Button>
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <label htmlFor="actual-cost" className="text-sm font-medium">
+                                What did it cost? ($)
+                              </label>
+                              <Input
+                                id="actual-cost"
+                                type="number"
+                                inputMode="decimal"
+                                min={0}
+                                step="0.01"
+                                value={actualCost}
+                                onChange={(e) => setActualCost(e.target.value)}
+                                placeholder="Optional — e.g. 85"
+                                className="rounded-xl"
+                              />
+                            </div>
+                            <div className="space-y-2">
                               <label className="text-sm font-medium">Notes (optional)</label>
                               <Textarea
                                 value={notes}
@@ -309,6 +363,15 @@ export default function HistoryPage() {
                           </div>
                         </DialogContent>
                       </Dialog>
+                    )}
+
+                    {item.status === 'scheduled' && item.scheduled_at && (
+                      <AddToCalendarButton
+                        title={item.idea_templates.title}
+                        description={item.idea_templates.description}
+                        scheduledAt={item.scheduled_at}
+                        durationMinutes={item.idea_templates.duration_minutes}
+                      />
                     )}
 
                     {/* Accessible delete confirmation */}

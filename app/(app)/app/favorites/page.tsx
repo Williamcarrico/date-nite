@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Star, Clock, DollarSign, Heart, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { CATEGORIES, COST_LEVELS } from '@/lib/constants/options'
+import { UnfavoriteButton } from '@/components/favorites/unfavorite-button'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Favorites' }
@@ -139,6 +140,10 @@ export default async function FavoritesPage() {
                       <Heart className="w-4 h-4 fill-current" />
                       <span className="text-xs">Favorited</span>
                     </div>
+                    <UnfavoriteButton
+                      ideaTemplateId={favorite.idea_template_id}
+                      title={template.title}
+                    />
                   </div>
                 </CardContent>
               </Card>

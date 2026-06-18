@@ -9,14 +9,11 @@ const profileSchema = z.object({
   partner_name: z.string().max(50).optional(),
   location_city: z.string().max(100).optional(),
   location_state: z.string().max(50).optional(),
-  max_distance_miles: z.number().min(5).max(100).optional(),
   budget_min: z.number().min(0).max(1000).optional(),
   budget_max: z.number().min(0).max(1000).optional(),
   cost_levels: z.array(z.number().min(1).max(4)).optional(),
   vibe_tags: z.array(z.string()).optional(),
   dietary_restrictions: z.array(z.string()).optional(),
-  preferred_day_of_week: z.array(z.number().min(0).max(6)).optional(),
-  preferred_time_of_day: z.array(z.string()).optional(),
   favorite_categories: z.array(z.string()).optional(),
 })
 
@@ -95,30 +92,4 @@ export async function updateProfile(formData: ProfileFormData) {
   revalidatePath('/app/profile')
 
   return { success: true }
-}
-
-interface ProfileStats {
-  total_suggestions: number
-  completed_dates: number
-  average_rating: number | null
-  active_exclusions: number
-  favorites_count: number
-}
-
-export async function getProfileStats(): Promise<ProfileStats | null> {
-  const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
-
-  const { data, error } = await supabase
-    .rpc('get_profile_stats', { p_profile_id: user.id } as never)
-    .single()
-
-  if (error) {
-    console.error('Error fetching stats:', error)
-    return null
-  }
-
-  return data as unknown as ProfileStats
 }

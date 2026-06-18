@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Heart, Sparkles, Calendar, Star, Clock, ArrowRight, TrendingUp } from 'lucide-react'
 import { CountUp } from '@/components/motion/number-flow'
+import { AddToCalendarButton } from '@/components/calendar/add-to-calendar-button'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
@@ -246,6 +247,16 @@ async function MainContent({ userId }: Readonly<{ userId: string }>) {
                     : 'Time TBD'}
                 </p>
               </div>
+              {upcomingDate.scheduled_at && upcomingDate.idea_templates && (
+                <AddToCalendarButton
+                  title={upcomingDate.idea_templates.title}
+                  description={upcomingDate.idea_templates.description}
+                  scheduledAt={upcomingDate.scheduled_at}
+                  durationMinutes={upcomingDate.idea_templates.duration_minutes}
+                  size="default"
+                  className="w-full rounded-xl"
+                />
+              )}
               <Link href="/app/history">
                 <Button variant="outline" className="w-full rounded-xl">
                   View Details
