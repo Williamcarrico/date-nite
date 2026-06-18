@@ -360,6 +360,50 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          body: string
+          created_at: string
+          href: string | null
+          id: string
+          metadata: Json
+          read: boolean
+          recipient_id: string
+          title: string
+          type: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          href?: string | null
+          id?: string
+          metadata?: Json
+          read?: boolean
+          recipient_id: string
+          title: string
+          type: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          href?: string | null
+          id?: string
+          metadata?: Json
+          read?: boolean
+          recipient_id?: string
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           budget_max: number | null
@@ -375,6 +419,7 @@ export type Database = {
           location_lng: number | null
           location_state: string | null
           max_distance_miles: number | null
+          notification_prefs: Json
           partner_name: string | null
           preferred_day_of_week: number[] | null
           preferred_intensity_levels: number[] | null
@@ -396,6 +441,7 @@ export type Database = {
           location_lng?: number | null
           location_state?: string | null
           max_distance_miles?: number | null
+          notification_prefs?: Json
           partner_name?: string | null
           preferred_day_of_week?: number[] | null
           preferred_intensity_levels?: number[] | null
@@ -417,6 +463,7 @@ export type Database = {
           location_lng?: number | null
           location_state?: string | null
           max_distance_miles?: number | null
+          notification_prefs?: Json
           partner_name?: string | null
           preferred_day_of_week?: number[] | null
           preferred_intensity_levels?: number[] | null
@@ -452,6 +499,44 @@ export type Database = {
           vibe_tags?: string[]
         }
         Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          profile_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          profile_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          profile_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_subscriptions_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       session_candidates: {
         Row: {
@@ -539,6 +624,7 @@ export type Database = {
           id: string
           idea_template_id: string
           profile_id: string
+          reminded_at: string | null
           scheduled_at: string | null
           scheduled_duration_minutes: number | null
           status: string
@@ -552,6 +638,7 @@ export type Database = {
           id?: string
           idea_template_id: string
           profile_id: string
+          reminded_at?: string | null
           scheduled_at?: string | null
           scheduled_duration_minutes?: number | null
           status?: string
@@ -565,6 +652,7 @@ export type Database = {
           id?: string
           idea_template_id?: string
           profile_id?: string
+          reminded_at?: string | null
           scheduled_at?: string | null
           scheduled_duration_minutes?: number | null
           status?: string

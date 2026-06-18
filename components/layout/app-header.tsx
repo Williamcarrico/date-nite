@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Heart, Sparkles, Clock, Star, User, LogOut, Menu, BarChart3, Gamepad2 } from 'lucide-react'
+import { Heart, Sparkles, Clock, Star, User, LogOut, Menu, BarChart3, Gamepad2, Bell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
@@ -159,10 +159,19 @@ export function AppHeader() {
                   })}
                 </nav>
                 <div className="mt-6 pt-6 border-t border-border">
-                  <Link href="/app/profile" onClick={() => setMobileMenuOpen(false)}>
+                  <Link href="/app/notifications" onClick={() => setMobileMenuOpen(false)}>
                     <Button
                       variant="ghost"
                       className="w-full justify-start gap-3 rounded-xl"
+                    >
+                      <Bell className="w-5 h-5" />
+                      Notifications
+                    </Button>
+                  </Link>
+                  <Link href="/app/profile" onClick={() => setMobileMenuOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-3 rounded-xl mt-2"
                     >
                       <User className="w-5 h-5" />
                       Profile Settings

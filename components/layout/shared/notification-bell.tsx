@@ -1,7 +1,9 @@
 'use client'
 
 import * as React from 'react'
-import { Bell, CheckCheck } from 'lucide-react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { Bell, CheckCheck, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Popover,
@@ -10,57 +12,32 @@ import {
 } from '@/components/ui/popover'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-
-export interface Notification {
-  id: string
-  title: string
-  message: string
-  read: boolean
-  createdAt: Date
-  type?: 'info' | 'success' | 'warning'
-}
+import { useNotifications } from '@/components/providers/notification-provider'
+import { getNotificationVisual } from '@/components/notifications/icon-map'
+import { RelativeTime } from '@/components/notifications/relative-time'
 
 interface NotificationBellProps {
-  notifications?: Notification[]
-  onMarkAsRead?: (id: string) => void
-  onMarkAllRead?: () => void
   className?: string
 }
 
-function formatTimeAgo(date: Date): string {
-  const now = new Date()
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+export function NotificationBell({ className }: NotificationBellProps) {
+  const router = useRouter()
+  const [open, setOpen] = React.useState(false)
+  const { items, unreadCount, loading, markAsRead, markAllRead } = useNotifications()
 
-  if (diffInSeconds < 60) return 'Just now'
-  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`
-  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`
-  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`
-  return date.toLocaleDateString()
-}
+  // Keep the popover preview short; the dedicated page shows everything.
+  const preview = items.slice(0, 8)
 
-export function NotificationBell({
-  notifications = [],
-  onMarkAsRead,
-  onMarkAllRead,
-  className,
-}: NotificationBellProps) {
-  const [localNotifications, setLocalNotifications] = React.useState(notifications)
-  const unreadCount = localNotifications.filter((n) => !n.read).length
-
-  const handleMarkAsRead = (id: string) => {
-    setLocalNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    )
-    onMarkAsRead?.(id)
-  }
-
-  const handleMarkAllRead = () => {
-    setLocalNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
-    onMarkAllRead?.()
+  async function handleItemClick(id: string, href: string | null) {
+    await markAsRead(id)
+    if (href) {
+      setOpen(false)
+      router.push(href)
+    }
   }
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
@@ -94,7 +71,7 @@ export function NotificationBell({
               variant="ghost"
               size="sm"
               className="text-xs text-muted-foreground hover:text-foreground"
-              onClick={handleMarkAllRead}
+              onClick={() => markAllRead()}
             >
               <CheckCheck className="h-3 w-3 mr-1" />
               Mark all read
@@ -104,7 +81,11 @@ export function NotificationBell({
 
         {/* Notifications List */}
         <div className="max-h-80 overflow-y-auto">
-          {localNotifications.length === 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            </div>
+          ) : preview.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
               <Bell className="h-10 w-10 text-muted-foreground/50 mb-2" />
               <p className="text-sm text-muted-foreground">No notifications yet</p>
@@ -114,41 +95,52 @@ export function NotificationBell({
             </div>
           ) : (
             <div className="divide-y divide-border">
-              {localNotifications.map((notification) => (
-                <button
-                  key={notification.id}
-                  type="button"
-                  className={cn(
-                    'flex gap-3 px-4 py-3 w-full text-left transition-colors hover:bg-muted/50',
-                    !notification.read && 'bg-primary/5'
-                  )}
-                  onClick={() => handleMarkAsRead(notification.id)}
-                >
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <p
-                        className={cn(
-                          'text-sm',
-                          !notification.read && 'font-medium'
-                        )}
-                      >
-                        {notification.title}
-                      </p>
-                      {!notification.read && (
-                        <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0 mt-1.5" />
+              {preview.map((item) => {
+                const { Icon, chip } = getNotificationVisual(item.type)
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={cn(
+                      'flex gap-3 px-4 py-3 w-full text-left transition-colors hover:bg-muted/50',
+                      !item.read && 'bg-primary/5'
+                    )}
+                    onClick={() => handleItemClick(item.id, item.href)}
+                  >
+                    <span
+                      className={cn(
+                        'flex h-9 w-9 shrink-0 items-center justify-center rounded-xl',
+                        chip
                       )}
+                    >
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className={cn('text-sm', !item.read && 'font-medium')}>
+                          {item.title}
+                        </p>
+                        {!item.read && (
+                          <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0 mt-1.5" />
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground line-clamp-2">
+                        {item.message}
+                      </p>
+                      <RelativeTime iso={item.createdAtISO} />
                     </div>
-                    <p className="text-xs text-muted-foreground line-clamp-2">
-                      {notification.message}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatTimeAgo(notification.createdAt)}
-                    </p>
-                  </div>
-                </button>
-              ))}
+                  </button>
+                )
+              })}
             </div>
           )}
+        </div>
+
+        {/* Footer */}
+        <div className="border-t border-border p-2">
+          <Button asChild variant="ghost" className="w-full rounded-xl" onClick={() => setOpen(false)}>
+            <Link href="/app/notifications">View all notifications</Link>
+          </Button>
         </div>
       </PopoverContent>
     </Popover>
