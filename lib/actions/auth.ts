@@ -47,8 +47,17 @@ export async function signInWithMagicLink(formData: FormData) {
     }
   }
 
+  // Derive the public origin robustly: prefer the request Origin, then the
+  // Vercel-forwarded host (reliable in production), then the configured app
+  // URL — so the magic-link redirect never silently defaults to localhost.
   const headersList = await headers()
-  const origin = headersList.get('origin') || process.env.NEXT_PUBLIC_APP_URL
+  const forwardedHost = headersList.get('x-forwarded-host')
+  const forwardedProto = headersList.get('x-forwarded-proto') ?? 'https'
+  const origin =
+    headersList.get('origin') ||
+    (forwardedHost ? `${forwardedProto}://${forwardedHost}` : null) ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    'http://localhost:3000'
 
   const { error } = await supabase.auth.signInWithOtp({
     email,
