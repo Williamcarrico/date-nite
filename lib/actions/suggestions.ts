@@ -132,11 +132,31 @@ export interface CandidateIdeaData {
   reservation_platforms: string[]
 }
 
+// Per-signal sub-scores (0-100) for the viewing partner. Gated signals
+// (vibe/category/dietary/intensity) are null when that preference is unset.
+export interface ScoreSignals {
+  total?: number | null
+  vibe: number | null
+  category: number | null
+  dietary: number | null
+  intensity: number | null
+  cost: number | null
+  seasonal: number | null
+  quality: number | null
+}
+
+export interface ScoreBreakdown {
+  score_a: number | null
+  score_b: number | null
+  final: number | null
+  signals_a: ScoreSignals | null
+}
+
 export interface ScoredCandidate {
   idea_id: string
   idea_data: CandidateIdeaData
   match_score: number
-  score_breakdown: Record<string, number | null>
+  score_breakdown: ScoreBreakdown
 }
 
 /**
@@ -196,7 +216,7 @@ export async function generateSuggestion(options?: {
   error?: string
   metadata?: {
     matchScore?: number
-    scoreBreakdown?: Record<string, number | null>
+    scoreBreakdown?: ScoreBreakdown
   }
 }> {
   const supabase = await createClient()

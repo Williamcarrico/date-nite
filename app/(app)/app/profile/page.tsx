@@ -10,8 +10,8 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { getProfile, updateProfile, type ProfileFormData } from '@/lib/actions/profile'
-import { VIBE_TAGS, DIETARY_RESTRICTIONS, COST_LEVELS, US_STATES, CATEGORIES } from '@/lib/constants/options'
-import { User, MapPin, DollarSign, Heart, Utensils, Save, Loader2, Star, ArrowLeft } from 'lucide-react'
+import { VIBE_TAGS, DIETARY_RESTRICTIONS, COST_LEVELS, INTENSITY_LEVELS, US_STATES, CATEGORIES } from '@/lib/constants/options'
+import { User, MapPin, DollarSign, Heart, Utensils, Save, Loader2, Star, ArrowLeft, Zap } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -28,6 +28,7 @@ export default function ProfilePage() {
     budget_min: 0,
     budget_max: 200,
     cost_levels: [1, 2, 3],
+    preferred_intensity_levels: [],
     vibe_tags: [],
     dietary_restrictions: [],
     favorite_categories: [],
@@ -45,6 +46,7 @@ export default function ProfilePage() {
           budget_min: data.budget_min || 0,
           budget_max: data.budget_max || 200,
           cost_levels: data.cost_levels || [1, 2, 3],
+          preferred_intensity_levels: data.preferred_intensity_levels || [],
           vibe_tags: data.vibe_tags || [],
           dietary_restrictions: data.dietary_restrictions || [],
           favorite_categories: data.favorite_categories || [],
@@ -227,6 +229,39 @@ export default function ProfilePage() {
             </div>
             <p className="text-xs text-muted-foreground">
               Select all price levels you&apos;re comfortable with
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="flex items-center gap-1.5">
+              <Zap className="w-4 h-4 text-primary" /> Preferred Energy Level
+            </Label>
+            <div className="flex flex-wrap gap-2">
+              {INTENSITY_LEVELS.map((level) => (
+                <Button
+                  key={level.value}
+                  type="button"
+                  variant={profile.preferred_intensity_levels?.includes(level.value) ? 'default' : 'outline'}
+                  onClick={() =>
+                    setProfile({
+                      ...profile,
+                      preferred_intensity_levels: toggleArrayValue(
+                        profile.preferred_intensity_levels || [],
+                        level.value
+                      ),
+                    })
+                  }
+                  className={`rounded-xl ${
+                    profile.preferred_intensity_levels?.includes(level.value) ? 'gradient-primary text-white' : ''
+                  }`}
+                  title={level.description}
+                >
+                  {level.emoji} {level.label}
+                </Button>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              How energetic do you like your dates? Leave empty for no preference.
             </p>
           </div>
         </CardContent>

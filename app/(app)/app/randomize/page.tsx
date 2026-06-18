@@ -18,6 +18,8 @@ import {
   getLatestSuggestion,
   checkIsFavorited,
   type Suggestion,
+  type ScoreBreakdown,
+  type ScoreSignals,
 } from '@/lib/actions/suggestions'
 import { downloadICS } from '@/lib/utils/ics'
 import { COST_LEVELS, CATEGORIES, SETTING_TYPES, INTENSITY_LEVELS } from '@/lib/constants/options'
@@ -57,6 +59,18 @@ import {
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { AnimatePresence, m } from 'motion/react'
+import Link from 'next/link'
+
+// Per-signal rows shown in the "Why this suggestion?" breakdown (order = display order).
+const MATCH_SIGNALS: { key: keyof ScoreSignals; label: string }[] = [
+  { key: 'vibe', label: 'Vibe match' },
+  { key: 'category', label: 'Category' },
+  { key: 'cost', label: 'Budget fit' },
+  { key: 'intensity', label: 'Energy level' },
+  { key: 'seasonal', label: 'Seasonal fit' },
+  { key: 'dietary', label: 'Dietary fit' },
+  { key: 'quality', label: 'Popularity' },
+]
 
 export default function RandomizePage() {
   const [suggestion, setSuggestion] = useState<Suggestion | null>(null)
@@ -71,7 +85,7 @@ export default function RandomizePage() {
   const [selectedSettings, setSelectedSettings] = useState<string[]>([])
   const [selectedIntensity, setSelectedIntensity] = useState<number[]>([])
   const [matchScore, setMatchScore] = useState<number | null>(null)
-  const [scoreBreakdown, setScoreBreakdown] = useState<Record<string, number | null> | null>(null)
+  const [scoreBreakdown, setScoreBreakdown] = useState<ScoreBreakdown | null>(null)
   const [temporalContext, setTemporalContext] = useState({
     season: getCurrentSeason(),
     timeOfDay: getTimeOfDay(),
@@ -485,34 +499,59 @@ export default function RandomizePage() {
                           </AccordionTrigger>
                           <AccordionContent>
                             <div className="p-3 rounded-lg bg-muted/50 space-y-1">
-                              {scoreBreakdown.score_a != null && (
-                                <div className="flex justify-between text-sm">
-                                  <span className="text-muted-foreground">Your fit:</span>
-                                  <span className="font-medium">{Math.round(scoreBreakdown.score_a)}%</span>
-                                </div>
-                              )}
+                              {/* Per-signal breakdown (your fit) */}
+                              {scoreBreakdown.signals_a &&
+                                MATCH_SIGNALS.filter(
+                                  (s) => scoreBreakdown.signals_a?.[s.key] != null
+                                ).map((s) => (
+                                  <div key={s.key} className="flex justify-between text-sm">
+                                    <span className="text-muted-foreground">{s.label}</span>
+                                    <span className="font-medium">
+                                      {Math.round(Number(scoreBreakdown.signals_a![s.key]))}%
+                                    </span>
+                                  </div>
+                                ))}
+                              {/* Two-player: partner fit + mutual match */}
                               {scoreBreakdown.score_b != null && (
-                                <div className="flex justify-between text-sm">
-                                  <span className="text-muted-foreground">Partner&apos;s fit:</span>
+                                <div className="flex justify-between text-sm pt-1 mt-1 border-t border-border/50">
+                                  <span className="text-muted-foreground">Partner&apos;s overall fit:</span>
                                   <span className="font-medium">{Math.round(scoreBreakdown.score_b)}%</span>
                                 </div>
                               )}
-                              {scoreBreakdown.final != null && (
+                              {scoreBreakdown.score_b != null && scoreBreakdown.final != null && (
                                 <div className="flex justify-between text-sm">
-                                  <span className="text-muted-foreground">
-                                    {scoreBreakdown.score_b != null ? 'Mutual match:' : 'Match:'}
-                                  </span>
+                                  <span className="text-muted-foreground">Mutual match:</span>
                                   <span className="font-medium">{Math.round(scoreBreakdown.final)}%</span>
                                 </div>
                               )}
                               <div className="pt-1 mt-1 border-t border-border/50 text-xs text-muted-foreground">
-                                Scored on your vibes, budget, dietary needs, the season, and how couples rated this idea.
+                                Scored on your vibe, budget, energy level, the season, and how couples rate this idea.
                               </div>
                             </div>
                           </AccordionContent>
                         </AccordionItem>
                       </Accordion>
                     )}
+
+                    {/* Nudge: prompt to set preferences when no gated signal is active */}
+                    {scoreBreakdown?.signals_a &&
+                      scoreBreakdown.signals_a.vibe == null &&
+                      scoreBreakdown.signals_a.category == null &&
+                      scoreBreakdown.signals_a.dietary == null &&
+                      scoreBreakdown.signals_a.intensity == null && (
+                        <Link
+                          href="/app/profile"
+                          className="mt-3 flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-primary/10"
+                        >
+                          <Sparkles className="w-3.5 h-3.5 text-primary shrink-0" />
+                          <span>
+                            <span className="font-medium text-foreground">
+                              Set your vibe, cuisine &amp; energy preferences
+                            </span>{' '}
+                            for sharper, more personal matches →
+                          </span>
+                        </Link>
+                      )}
 
                     {/* Setting & Intensity Badges */}
                     <div className="flex flex-wrap gap-2 mt-3">

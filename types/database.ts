@@ -377,6 +377,7 @@ export type Database = {
           max_distance_miles: number | null
           partner_name: string | null
           preferred_day_of_week: number[] | null
+          preferred_intensity_levels: number[] | null
           preferred_time_of_day: string[] | null
           updated_at: string | null
           vibe_tags: string[] | null
@@ -397,6 +398,7 @@ export type Database = {
           max_distance_miles?: number | null
           partner_name?: string | null
           preferred_day_of_week?: number[] | null
+          preferred_intensity_levels?: number[] | null
           preferred_time_of_day?: string[] | null
           updated_at?: string | null
           vibe_tags?: string[] | null
@@ -417,6 +419,7 @@ export type Database = {
           max_distance_miles?: number | null
           partner_name?: string | null
           preferred_day_of_week?: number[] | null
+          preferred_intensity_levels?: number[] | null
           preferred_time_of_day?: string[] | null
           updated_at?: string | null
           vibe_tags?: string[] | null
@@ -601,23 +604,29 @@ export type Database = {
         }
         Returns: Json
       }
-      dn_score_one: {
+      dn_score_v4: {
         Args: {
           i_avg_rating: number
           i_category: string
+          i_comp_n: number
           i_cost_level: number
           i_cost_min: number
           i_dietary_friendly: string[]
+          i_fav_n: number
+          i_intensity: number
+          i_rating_n: number
           i_seasonal: string[]
+          i_sugg_n: number
           i_vibe_tags: string[]
           p_budget_max: number
           p_cost_levels: number[]
           p_current_season: string
           p_dietary: string[]
           p_favorite_categories: string[]
+          p_pref_intensity: number[]
           p_vibe_tags: string[]
         }
-        Returns: number
+        Returns: Json
       }
       generate_couple_candidates_v3: {
         Args: {
