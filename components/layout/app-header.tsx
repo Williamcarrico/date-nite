@@ -100,7 +100,7 @@ export function AppHeader() {
               </Tooltip>
               <DropdownMenuContent align="end" className="w-48 rounded-xl">
                 <DropdownMenuItem asChild>
-                  <Link href="/profile" className="flex items-center gap-2 cursor-pointer">
+                  <Link href="/app/profile" className="flex items-center gap-2 cursor-pointer">
                     <User className="w-4 h-4" />
                     Profile Settings
                   </Link>
@@ -159,7 +159,7 @@ export function AppHeader() {
                   })}
                 </nav>
                 <div className="mt-6 pt-6 border-t border-border">
-                  <Link href="/profile" onClick={() => setMobileMenuOpen(false)}>
+                  <Link href="/app/profile" onClick={() => setMobileMenuOpen(false)}>
                     <Button
                       variant="ghost"
                       className="w-full justify-start gap-3 rounded-xl"

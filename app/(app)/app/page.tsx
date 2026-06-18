@@ -387,7 +387,7 @@ export default async function DashboardPage() {
                 personalized date suggestions!
               </p>
             </div>
-            <Link href="/profile">
+            <Link href="/app/profile">
               <Button variant="secondary" className="rounded-xl shrink-0">
                 Update Profile
               </Button>

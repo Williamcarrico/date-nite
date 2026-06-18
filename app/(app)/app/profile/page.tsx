@@ -11,10 +11,13 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { getProfile, updateProfile, type ProfileFormData } from '@/lib/actions/profile'
 import { VIBE_TAGS, DIETARY_RESTRICTIONS, COST_LEVELS, US_STATES, CATEGORIES } from '@/lib/constants/options'
-import { User, MapPin, DollarSign, Heart, Utensils, Save, Loader2, Calendar, Star } from 'lucide-react'
+import { User, MapPin, DollarSign, Heart, Utensils, Save, Loader2, Calendar, Star, ArrowLeft } from 'lucide-react'
 import { toast } from 'sonner'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function ProfilePage() {
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [profile, setProfile] = useState<ProfileFormData>({
@@ -66,7 +69,8 @@ export default function ProfilePage() {
     if (result.error) {
       toast.error(result.error)
     } else {
-      toast.success('Profile updated successfully!')
+      toast.success('Profile updated! Taking you back to your dashboard.')
+      router.push('/app')
     }
   }
 
@@ -87,6 +91,13 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
       <div>
+        <Link
+          href="/app"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-3"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Dashboard
+        </Link>
         <h1 className="font-display text-3xl font-bold">Profile Settings</h1>
         <p className="text-muted-foreground mt-1">
           Customize your preferences to get better date suggestions
