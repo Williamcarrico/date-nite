@@ -12,6 +12,7 @@ const profileSchema = z.object({
   budget_min: z.number().min(0).max(1000).optional(),
   budget_max: z.number().min(0).max(1000).optional(),
   cost_levels: z.array(z.number().min(1).max(4)).optional(),
+  preferred_intensity_levels: z.array(z.number().min(1).max(4)).optional(),
   vibe_tags: z.array(z.string()).optional(),
   dietary_restrictions: z.array(z.string()).optional(),
   favorite_categories: z.array(z.string()).optional(),
@@ -29,6 +30,7 @@ interface ProfileData {
   budget_min: number
   budget_max: number
   cost_levels: number[]
+  preferred_intensity_levels: number[] | null
   vibe_tags: string[]
   dietary_restrictions: string[]
   preferred_day_of_week: number[] | null

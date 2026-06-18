@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { getCurrentSeason } from '@/lib/utils/context'
 import { getCouple } from '@/lib/actions/couples'
 import { getCandidates } from '@/lib/actions/suggestions'
+import type { Json } from '@/types/database'
 
 export interface DeckCard {
   candidateId: string
@@ -93,7 +94,7 @@ export async function startRound(options?: {
     session_id: session.id,
     idea_template_id: c.idea_id,
     match_score: c.match_score,
-    score_breakdown: c.score_breakdown,
+    score_breakdown: c.score_breakdown as unknown as Json,
     position: i,
   }))
   const { error: cErr } = await supabase.from('session_candidates').insert(rows)
