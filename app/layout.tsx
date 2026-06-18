@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LazyMotion, domAnimation, MotionConfig } from "motion/react";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { NotificationProvider } from "@/components/providers/notification-provider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -106,7 +107,7 @@ export default function RootLayout({
           >
             <LazyMotion features={domAnimation}>
               <MotionConfig reducedMotion="user">
-                {children}
+                <NotificationProvider>{children}</NotificationProvider>
               </MotionConfig>
             </LazyMotion>
           </ThemeProvider>

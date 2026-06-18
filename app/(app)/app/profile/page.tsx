@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { getProfile, updateProfile, type ProfileFormData } from '@/lib/actions/profile'
 import { VIBE_TAGS, DIETARY_RESTRICTIONS, COST_LEVELS, INTENSITY_LEVELS, US_STATES, CATEGORIES } from '@/lib/constants/options'
-import { User, MapPin, DollarSign, Heart, Utensils, Save, Loader2, Star, ArrowLeft, Zap } from 'lucide-react'
+import { User, MapPin, DollarSign, Heart, Utensils, Save, Loader2, Star, ArrowLeft, Zap, Bell } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -94,10 +94,20 @@ export default function ProfilePage() {
           <ArrowLeft className="w-4 h-4" />
           Back to Dashboard
         </Link>
-        <h1 className="font-display text-3xl font-bold">Profile Settings</h1>
-        <p className="text-muted-foreground mt-1">
-          Customize your preferences to get better date suggestions
-        </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="font-display text-3xl font-bold">Profile Settings</h1>
+            <p className="text-muted-foreground mt-1">
+              Customize your preferences to get better date suggestions
+            </p>
+          </div>
+          <Button asChild variant="outline" size="sm" className="rounded-xl shrink-0">
+            <Link href="/app/notifications/settings">
+              <Bell className="w-4 h-4 mr-2" />
+              Notification settings
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Personal Info */}
