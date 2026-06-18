@@ -679,6 +679,7 @@ export type Database = {
       dn_score_one: {
         Args: {
           i_avg_rating: number
+          i_category: string
           i_cost_level: number
           i_cost_min: number
           i_dietary_friendly: string[]
@@ -688,6 +689,7 @@ export type Database = {
           p_cost_levels: number[]
           p_current_season: string
           p_dietary: string[]
+          p_favorite_categories: string[]
           p_vibe_tags: string[]
         }
         Returns: number
