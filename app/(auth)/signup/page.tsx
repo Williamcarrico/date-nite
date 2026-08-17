@@ -1,58 +1,61 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
+import {
+  AlertCircle,
+  ArrowRight,
+  Calendar,
+  CheckCircle2,
+  Heart,
+  Mail,
+  Sparkles,
+  Star,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { signInWithMagicLink } from '@/lib/actions/auth'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Heart, Mail, ArrowRight, CheckCircle2, Sparkles, Calendar, Star, AlertCircle } from 'lucide-react'
-import Link from 'next/link'
+import { PasswordField } from '@/components/auth/password-field'
+import { signUp } from '@/lib/actions/auth'
+import { MIN_PASSWORD_LENGTH } from '@/lib/constants/auth'
 
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false)
-  const [emailSent, setEmailSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [message, setMessage] = useState<string | null>(null)
 
   async function handleSubmit(formData: FormData) {
     setIsLoading(true)
     setError(null)
+    setMessage(null)
 
-    const result = await signInWithMagicLink(formData)
+    // When confirmation is disabled the action redirects straight to /app and
+    // control never returns here.
+    const result = await signUp(formData)
 
     setIsLoading(false)
-
-    if (result.error) {
-      setError(result.error)
-    } else if (result.success) {
-      setEmailSent(true)
-    }
+    if (result?.error) setError(result.error)
+    else if (result?.message) setMessage(result.message)
   }
 
-  if (emailSent) {
+  if (message) {
     return (
       <Card className="shadow-playful-lg border-0 animate-bounce-in">
         <CardHeader className="text-center pb-2">
           <div className="mx-auto w-16 h-16 rounded-full bg-success/20 flex items-center justify-center mb-4">
             <CheckCircle2 className="w-8 h-8 text-success" />
           </div>
-          <CardTitle className="text-2xl">Check your email!</CardTitle>
-          <CardDescription className="text-base">
-            We sent you a magic link. Click it to create your account instantly!
-          </CardDescription>
+          <CardTitle className="text-2xl">Almost there!</CardTitle>
+          <CardDescription className="text-base">{message}</CardDescription>
         </CardHeader>
         <CardContent className="text-center">
-          <p className="text-sm text-muted-foreground mb-4">
-            Didn&apos;t receive the email? Check your spam folder or try again.
-          </p>
-          <Button
-            variant="ghost"
-            onClick={() => setEmailSent(false)}
-            className="text-primary hover:text-primary/80"
-          >
-            Try a different email
-          </Button>
+          <Link href="/login">
+            <Button variant="ghost" className="text-primary hover:text-primary/80">
+              Back to sign in
+            </Button>
+          </Link>
         </CardContent>
       </Card>
     )
@@ -78,7 +81,7 @@ export default function SignupPage() {
           <div className="w-10 h-10 mx-auto rounded-xl bg-accent/10 flex items-center justify-center mb-2">
             <Star className="w-5 h-5 text-accent" />
           </div>
-          <p className="text-xs font-medium">Rate & Track</p>
+          <p className="text-xs font-medium">Rate &amp; Track</p>
         </div>
       </div>
 
@@ -97,17 +100,38 @@ export default function SignupPage() {
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Mail
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                  aria-hidden="true"
+                />
                 <Input
                   id="email"
                   name="email"
                   type="email"
+                  autoComplete="email"
                   placeholder="you@example.com"
                   required
                   className="pl-10 h-12 rounded-xl"
                 />
               </div>
             </div>
+
+            <PasswordField
+              id="password"
+              name="password"
+              label="Password"
+              autoComplete="new-password"
+              minLength={MIN_PASSWORD_LENGTH}
+              hint={`At least ${MIN_PASSWORD_LENGTH} characters.`}
+            />
+
+            <PasswordField
+              id="confirmPassword"
+              name="confirmPassword"
+              label="Confirm password"
+              autoComplete="new-password"
+              minLength={MIN_PASSWORD_LENGTH}
+            />
 
             {error && (
               <Alert variant="destructive" className="rounded-xl">

@@ -1,61 +1,64 @@
 'use client'
 
-import { Suspense, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useState } from 'react'
 import Link from 'next/link'
-import { AlertCircle, ArrowRight, Mail, Sparkles } from 'lucide-react'
+import { AlertCircle, ArrowRight, CheckCircle2, KeyRound, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { PasswordField } from '@/components/auth/password-field'
-import { signIn } from '@/lib/actions/auth'
+import { requestPasswordReset } from '@/lib/actions/auth'
 
-/**
- * The auth callback redirects here with `?error=` when an email link fails.
- * Reading it is what stops a bad link from looking like an infinite loop.
- *
- * `useSearchParams` needs a Suspense boundary, or the route bails out of static
- * rendering at build time.
- */
-export default function LoginPage() {
-  return (
-    <Suspense fallback={<LoginForm initialError={null} />}>
-      <LoginFormWithCallbackError />
-    </Suspense>
-  )
-}
-
-function LoginFormWithCallbackError() {
-  const searchParams = useSearchParams()
-  return <LoginForm initialError={searchParams.get('error')} />
-}
-
-function LoginForm({ initialError }: { initialError: string | null }) {
+export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(initialError)
+  const [error, setError] = useState<string | null>(null)
+  const [message, setMessage] = useState<string | null>(null)
 
   async function handleSubmit(formData: FormData) {
     setIsLoading(true)
     setError(null)
 
-    // On success the action redirects, so control never returns here.
-    const result = await signIn(formData)
+    const result = await requestPasswordReset(formData)
 
     setIsLoading(false)
-    if (result?.error) setError(result.error)
+    if (result.error) setError(result.error)
+    else if (result.message) setMessage(result.message)
+  }
+
+  if (message) {
+    return (
+      <Card className="shadow-playful-lg border-0 animate-bounce-in">
+        <CardHeader className="text-center pb-2">
+          <div className="mx-auto w-16 h-16 rounded-full bg-success/20 flex items-center justify-center mb-4">
+            <CheckCircle2 className="w-8 h-8 text-success" />
+          </div>
+          <CardTitle className="text-2xl">Check your email</CardTitle>
+          <CardDescription className="text-base">{message}</CardDescription>
+        </CardHeader>
+        <CardContent className="text-center">
+          <p className="text-sm text-muted-foreground mb-4">
+            The link opens a page where you can choose a new password.
+          </p>
+          <Link href="/login">
+            <Button variant="ghost" className="text-primary hover:text-primary/80">
+              Back to sign in
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
+    )
   }
 
   return (
     <Card className="shadow-playful-lg border-0">
       <CardHeader className="text-center pb-2">
-        <div className="mx-auto w-16 h-16 rounded-full gradient-primary flex items-center justify-center mb-4 shadow-playful">
-          <Sparkles className="w-8 h-8 text-white" />
+        <div className="mx-auto w-16 h-16 rounded-full gradient-secondary flex items-center justify-center mb-4 shadow-playful">
+          <KeyRound className="w-8 h-8 text-white" />
         </div>
-        <CardTitle className="text-2xl">Welcome back!</CardTitle>
+        <CardTitle className="text-2xl">Reset your password</CardTitle>
         <CardDescription className="text-base">
-          Sign in to continue planning amazing dates
+          We&apos;ll email you a link to choose a new one
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -79,22 +82,6 @@ function LoginForm({ initialError }: { initialError: string | null }) {
             </div>
           </div>
 
-          <PasswordField
-            id="password"
-            name="password"
-            label="Password"
-            autoComplete="current-password"
-          />
-
-          <div className="flex justify-end">
-            <Link
-              href="/forgot-password"
-              className="text-sm text-primary hover:underline"
-            >
-              Forgot password?
-            </Link>
-          </div>
-
           {error && (
             <Alert variant="destructive" className="rounded-xl">
               <AlertCircle className="h-4 w-4" />
@@ -110,11 +97,11 @@ function LoginForm({ initialError }: { initialError: string | null }) {
             {isLoading ? (
               <span className="flex items-center gap-2">
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Signing in...
+                Sending...
               </span>
             ) : (
               <span className="flex items-center gap-2">
-                Sign in
+                Send reset link
                 <ArrowRight className="w-4 h-4" />
               </span>
             )}
@@ -123,9 +110,9 @@ function LoginForm({ initialError }: { initialError: string | null }) {
 
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
-            Don&apos;t have an account?{' '}
-            <Link href="/signup" className="text-primary hover:underline font-medium">
-              Sign up
+            Remembered it?{' '}
+            <Link href="/login" className="text-primary hover:underline font-medium">
+              Sign in
             </Link>
           </p>
         </div>
