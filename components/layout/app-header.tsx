@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Heart, Sparkles, Clock, Star, User, LogOut, Menu, BarChart3, Gamepad2, Bell } from 'lucide-react'
+import { Heart, Sparkles, Clock, Star, User, LogOut, Menu, BarChart3, Gamepad2, Bell, BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
@@ -26,10 +26,15 @@ import { signOut } from '@/lib/actions/auth'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
+// Active state is deliberately exact-match (see `isActive` below): a `startsWith`
+// check would light up Dashboard on every child route. If a nav entry ever gains
+// sub-routes (e.g. /app/guide/[part]), add a per-item `exact?: boolean` here
+// rather than loosening the comparison for everything.
 const navItems = [
   { href: '/app', label: 'Dashboard', icon: Sparkles },
   { href: '/app/play', label: 'Play Together', icon: Gamepad2 },
   { href: '/app/randomize', label: 'Get Ideas', icon: Heart },
+  { href: '/app/guide', label: 'Guide', icon: BookOpen },
   { href: '/app/history', label: 'History', icon: Clock },
   { href: '/app/insights', label: 'Insights', icon: BarChart3 },
   { href: '/app/favorites', label: 'Favorites', icon: Star },
@@ -47,7 +52,9 @@ export function AppHeader() {
           <Logo href="/app" size="md" showText />
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
+          {/* xl, not md: seven icon+label buttons plus the logo and the right-hand
+              cluster overflow below ~1280px, so tablets get the Sheet instead. */}
+          <nav className="hidden xl:flex items-center gap-1" aria-label="Main navigation">
             {navItems.map((item) => {
               const isActive = pathname === item.href
               return (
@@ -122,7 +129,7 @@ export function AppHeader() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="md:hidden rounded-xl"
+                  className="xl:hidden rounded-xl"
                   aria-label="Open menu"
                 >
                   <Menu className="w-5 h-5" />
