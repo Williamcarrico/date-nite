@@ -218,6 +218,25 @@
   }
 }
 
+/* Long-form reading styles for the First Date Guide (/app/guide).
+   `@layer components`, not `utilities`, so a one-off utility on an element still
+   wins the cascade. There is no @tailwindcss/typography plugin in this project,
+   so prose sizing is hand-rolled from the existing @theme tokens. */
+@layer components {
+  .guide-prose {
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height, 1.6);
+    color: color-mix(in oklch, var(--foreground) 88%, transparent);
+    text-wrap: pretty;
+  }
+  .guide-script {
+    text-wrap: pretty;
+  }
+  .guide-table {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
 /* Custom gradient utility classes */
 @layer utilities {
   .gradient-primary {
