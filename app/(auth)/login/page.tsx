@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -10,10 +11,31 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Sparkles, Mail, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 
+/**
+ * The auth callback redirects here with `?error=` when a sign-in link fails.
+ * Reading it is what stops a bad link from looking like an infinite loop: the
+ * user sees why it failed instead of a blank form.
+ *
+ * `useSearchParams` needs a Suspense boundary, or the route bails out of static
+ * rendering at build time.
+ */
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginForm initialError={null} />}>
+      <LoginFormWithCallbackError />
+    </Suspense>
+  )
+}
+
+function LoginFormWithCallbackError() {
+  const searchParams = useSearchParams()
+  return <LoginForm initialError={searchParams.get('error')} />
+}
+
+function LoginForm({ initialError }: { initialError: string | null }) {
   const [isLoading, setIsLoading] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(initialError)
 
   async function handleSubmit(formData: FormData) {
     setIsLoading(true)
