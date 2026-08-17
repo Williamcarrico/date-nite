@@ -55,12 +55,16 @@ export async function GET(request: Request) {
   const code = searchParams.get('code')
   const tokenHash = searchParams.get('token_hash')
   const type = searchParams.get('type')
-  const next = searchParams.get('next') ?? '/app'
+  // A recovery link has to land on the page that sets a new password, not the
+  // app — the session it establishes exists for exactly that purpose. An
+  // explicit `next` still wins, so resetPasswordForEmail can pass its own.
+  const defaultPath = type === 'recovery' ? '/reset-password' : '/app'
+  const next = searchParams.get('next') ?? defaultPath
 
   // SECURITY: Validate redirect path to prevent open redirect vulnerability.
   // Only allow relative paths that don't start with //
   const isValidPath = next.startsWith('/') && !next.startsWith('//')
-  const safePath = isValidPath ? next : '/app'
+  const safePath = isValidPath ? next : defaultPath
 
   const failure = (reason: string) =>
     NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(reason)}`)

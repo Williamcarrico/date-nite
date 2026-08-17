@@ -3,36 +3,33 @@
 import { Suspense, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { AlertCircle, ArrowRight, Mail, Sparkles } from 'lucide-react'
+import { AlertCircle, ArrowRight, KeyRound } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { PasswordField } from '@/components/auth/password-field'
-import { signIn } from '@/lib/actions/auth'
+import { updatePassword } from '@/lib/actions/auth'
+import { MIN_PASSWORD_LENGTH } from '@/lib/constants/auth'
 
 /**
- * The auth callback redirects here with `?error=` when an email link fails.
- * Reading it is what stops a bad link from looking like an infinite loop.
- *
- * `useSearchParams` needs a Suspense boundary, or the route bails out of static
- * rendering at build time.
+ * Reached via the recovery link, which the auth callback exchanges for a
+ * session before redirecting here. The session is what authorizes the update —
+ * `updatePassword` refuses if there isn't one.
  */
-export default function LoginPage() {
+export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<LoginForm initialError={null} />}>
-      <LoginFormWithCallbackError />
+    <Suspense fallback={<ResetPasswordForm initialError={null} />}>
+      <ResetPasswordFormWithError />
     </Suspense>
   )
 }
 
-function LoginFormWithCallbackError() {
+function ResetPasswordFormWithError() {
   const searchParams = useSearchParams()
-  return <LoginForm initialError={searchParams.get('error')} />
+  return <ResetPasswordForm initialError={searchParams.get('error')} />
 }
 
-function LoginForm({ initialError }: { initialError: string | null }) {
+function ResetPasswordForm({ initialError }: { initialError: string | null }) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(initialError)
 
@@ -40,8 +37,8 @@ function LoginForm({ initialError }: { initialError: string | null }) {
     setIsLoading(true)
     setError(null)
 
-    // On success the action redirects, so control never returns here.
-    const result = await signIn(formData)
+    // On success the action redirects to /app.
+    const result = await updatePassword(formData)
 
     setIsLoading(false)
     if (result?.error) setError(result.error)
@@ -51,49 +48,31 @@ function LoginForm({ initialError }: { initialError: string | null }) {
     <Card className="shadow-playful-lg border-0">
       <CardHeader className="text-center pb-2">
         <div className="mx-auto w-16 h-16 rounded-full gradient-primary flex items-center justify-center mb-4 shadow-playful">
-          <Sparkles className="w-8 h-8 text-white" />
+          <KeyRound className="w-8 h-8 text-white" />
         </div>
-        <CardTitle className="text-2xl">Welcome back!</CardTitle>
+        <CardTitle className="text-2xl">Choose a new password</CardTitle>
         <CardDescription className="text-base">
-          Sign in to continue planning amazing dates
+          You&apos;ll be signed in as soon as it&apos;s saved
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form action={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <div className="relative">
-              <Mail
-                className="absolute left-3 top-1/2 w-4 h-4 -translate-y-1/2 text-muted-foreground"
-                aria-hidden="true"
-              />
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                placeholder="you@example.com"
-                required
-                className="pl-10 h-12 rounded-xl"
-              />
-            </div>
-          </div>
-
           <PasswordField
             id="password"
             name="password"
-            label="Password"
-            autoComplete="current-password"
+            label="New password"
+            autoComplete="new-password"
+            minLength={MIN_PASSWORD_LENGTH}
+            hint={`At least ${MIN_PASSWORD_LENGTH} characters.`}
           />
 
-          <div className="flex justify-end">
-            <Link
-              href="/forgot-password"
-              className="text-sm text-primary hover:underline"
-            >
-              Forgot password?
-            </Link>
-          </div>
+          <PasswordField
+            id="confirmPassword"
+            name="confirmPassword"
+            label="Confirm new password"
+            autoComplete="new-password"
+            minLength={MIN_PASSWORD_LENGTH}
+          />
 
           {error && (
             <Alert variant="destructive" className="rounded-xl">
@@ -110,11 +89,11 @@ function LoginForm({ initialError }: { initialError: string | null }) {
             {isLoading ? (
               <span className="flex items-center gap-2">
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Signing in...
+                Saving...
               </span>
             ) : (
               <span className="flex items-center gap-2">
-                Sign in
+                Save password
                 <ArrowRight className="w-4 h-4" />
               </span>
             )}
@@ -123,9 +102,9 @@ function LoginForm({ initialError }: { initialError: string | null }) {
 
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
-            Don&apos;t have an account?{' '}
-            <Link href="/signup" className="text-primary hover:underline font-medium">
-              Sign up
+            Need a new link?{' '}
+            <Link href="/forgot-password" className="text-primary hover:underline font-medium">
+              Request one
             </Link>
           </p>
         </div>
